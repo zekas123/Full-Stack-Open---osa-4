@@ -6,17 +6,17 @@ const totalLikes = (blogs) =>{
     return blogs.reduce((sum, blog) => sum + blog.likes, 0)
 }
 const favoriteBlog = (blogs) =>{
-    let num0 = 0 
-    let num1 = 1 
+  if (blogs.length = 0){
+    return null 
+  }
+  return blogs.reduce((prev, current) =>{
+    return(current.likes>prev.likes)?current:prev
+  })
     
-    let favoriteBlog_sum
-    for(a in blogs){
-        blogs.likes 
-    }
-    return 
 }
 
 module.exports = {
+  favoriteBlog,
   dummy,
   totalLikes,
 }
