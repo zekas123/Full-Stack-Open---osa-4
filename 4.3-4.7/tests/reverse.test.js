@@ -30,3 +30,24 @@ test ('blog tests', () =>{
 
 })
 
+const listWithMultipleBlogs = [
+  {
+    title: 'Canonical string reduction',
+    author: 'Edsger W. Dijkstra',
+    likes: 12
+  },
+  {
+    title: 'First class tests',
+    author: 'Robert C. Martin',
+    likes: 10
+  }
+]
+test ('Check Blogs ',() =>{
+  const result = favoriteBlog(listWithMultipleBlogs)
+  assert.deepStrictEqual(result,listWithMultipleBlogs[0])
+})
+test ('when list is empty', ()=>{
+  const result = favoriteBlog([])
+  assert.strictEqual(result,null)
+})
+
