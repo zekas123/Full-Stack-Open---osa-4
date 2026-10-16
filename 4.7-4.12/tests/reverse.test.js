@@ -6,6 +6,7 @@ const app = require('../app')
 const Blog = require('../models/blog') 
 const listHelper = require('../utils/list_helper')
 const { favoriteBlog } = require('../utils/list_helper')
+const blog = require('../models/blog')
 
 const api = supertest(app)
 
@@ -213,6 +214,39 @@ test('blog without url is not added', async () => {
   assert.strictEqual(response.body.length, lol_blog.length)
 })
 
+test('a blog can be deleted', async () => {
+
+  const blogsAtStart = await Blog.find({})
+  const blogToDelete = blogsAtStart[0]
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+  const blogsAtEnd = await Blog.find({})
+
+  assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1)
+
+  const titles = blogsAtEnd.map(b => b.title)
+  assert.ok(!titles.includes(blogToDelete.title))
+})
+test('a blog can be updated (only likes=)', async () => {
+  const blogsAtStart = await Blog.find({})
+  const blogToUpdate = blogsAtStart[0]
+
+  const updatedLikes = 1515212
+
+  const response = await api
+    .patch(`/api/blogs/${blogToUpdate.id}`)
+    .send({ likes: updatedLikes })
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  assert.strictEqual(response.body.likes, updatedLikes)
+
+  const updatedBlogInDb = await Blog.findById(blogToUpdate.id)
+  assert.strictEqual(updatedBlogInDb.likes, updatedLikes)
+})
 
   after(async () => {
     await mongoose.connection.close()
