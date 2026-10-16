@@ -241,9 +241,7 @@ test('a blog can be updated (only likes=)', async () => {
     .send({ likes: updatedLikes })
     .expect(200)
     .expect('Content-Type', /application\/json/)
-
   assert.strictEqual(response.body.likes, updatedLikes)
-
   const updatedBlogInDb = await Blog.findById(blogToUpdate.id)
   assert.strictEqual(updatedBlogInDb.likes, updatedLikes)
 })
