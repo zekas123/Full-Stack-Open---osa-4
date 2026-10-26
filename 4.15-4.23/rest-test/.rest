@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "First class test123s",
+  "author": "Robert C. Mart111in",
+  "url": "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htm",
+  "likes": 11
+}
