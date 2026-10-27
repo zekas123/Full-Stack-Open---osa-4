@@ -13,20 +13,30 @@ usersRouter.get('/', async (request, response) => {
 
 usersRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body
-  const userr = await User.findOne({ username })
 
+  // 1. Проверяем username (наличие и минимальную длину)
+  if (!username || username.length < 3) {
+    return response.status(400).json({
+      error: 'username must be at least 3 characters long',
+    })
+  }
+
+  // 2. Проверяем password (наличие и минимальную длину)
   if (!password || password.length < 3) {
     return response.status(400).json({
       error: 'password must be at least 3 characters long',
     })
   }
-  if (userr != null){
+
+  // 3. Объявляем userr И проверяем, нет ли такого пользователя в базе
+  const userr = await User.findOne({ username })
+  if (userr !== null) {
     return response.status(400).json({
-        error:'this username in DB'
+      error: 'expected `username` to be unique',
     })
   }
-  
 
+  // 4. Если все проверки пройдены — хешируем и сохраняем
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(password, saltRounds)
 
@@ -35,7 +45,6 @@ usersRouter.post('/', async (request, response) => {
     name,
     passwordHash,
   })
-
 
   const savedUser = await user.save()
 

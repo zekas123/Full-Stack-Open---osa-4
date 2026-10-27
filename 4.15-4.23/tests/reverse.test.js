@@ -297,7 +297,71 @@ describe('when there is initially one user at db', () => {
     assert(usernames.includes(newUser.username))
   })
 })
+describe('when creating a user with a duplicate username', () => {
+  beforeEach(async () => {
+    await User.deleteMany({}) 
 
+    const initialUser = {
+      username: 'mluukkai',
+      name: 'Matti Luukkainen',
+      password: 'salainen',
+    }
+
+    // Создаем первого пользователя (успешно)
+    await api
+      .post('/api/users')
+      .send(initialUser)
+      .expect(201)
+  })
+
+  test('creation fails with proper statuscode and message if username is already taken', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const duplicateUser = {
+      username: 'mluukkai', 
+      name: 'Matti Luukkainen',
+      password: 'salainen',
+    }
+
+    // Второй запрос с тем же логином должен упасть с 400
+    const result = await api
+      .post('/api/users')
+      .send(duplicateUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    // Проверяем, что в теле ответа есть текст ошибки
+    assert(result.body.error.includes('expected `username` to be unique'))
+
+    // Проверяем, что база не изменилась (пользователь не добавился)
+    const usersAtEnd = await helper.usersInDb()
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+  })
+})
+test('username have <3 leght', async () => {
+  beforeEach(async () => {
+    await User.deleteMany({}) 
+
+    const initialUser = {
+      username: 'ml',
+      name: 'Matti Luukkainen',
+      password: 'salainen',
+    }
+
+     
+    await api
+      .post('/api/users')
+      .send(initialUser)
+      .expect(400)
+
+    assert(result.body.error.includes('expected `username` to be unique'))
+
+
+    const usersAtEnd = await helper.usersInDb()
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+  })
+
+})
 
 after(async () => {
   await mongoose.connection.close()
