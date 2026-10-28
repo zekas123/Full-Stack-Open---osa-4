@@ -142,9 +142,23 @@ describe('unit tests (list helper)', () => {
 
 
 describe('api tests', () => {
+  let testUser
+  let testToken
+
+  before(async () => {
+    await User.deleteMany({})
+    const passwordHash = await bcrypt.hash('testpass', 10)
+    testUser = await new User({ username: 'testuser', name: 'Test User', passwordHash }).save()
+
+    const loginResponse = await api
+      .post('/api/login')
+      .send({ username: 'testuser', password: 'testpass' })
+    testToken = loginResponse.body.token
+  })
+
   beforeEach(async () => {
     await Blog.deleteMany({})
-    await Blog.insertMany(lol_blog)
+    await Blog.insertMany(lol_blog.map(blog => ({ ...blog, user: testUser._id })))
   })
 
   test('how many blogs', async () => {
@@ -177,11 +191,23 @@ describe('api tests', () => {
 
   const response = await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${testToken}`)
     .send(newBlogWithoutLikes)
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
   assert.strictEqual(response.body.likes, 0)
+})
+
+
+test('blog cannot be added without a token', async () => {
+  await api
+    .post('/api/blogs')
+    .send({ title: 'No token', url: 'https://example.com' })
+    .expect(401)
+
+  const response = await api.get('/api/blogs')
+  assert.strictEqual(response.body.length, lol_blog.length)
 })
 
 
@@ -195,6 +221,7 @@ test('blog without title is not added', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${testToken}`)
     .send(newBlogWithoutTitle)
     .expect(400)
 
@@ -212,6 +239,7 @@ test('blog without url is not added', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${testToken}`)
     .send(newBlogWithoutUrl)
     .expect(400)
 
@@ -226,6 +254,7 @@ test('a blog can be deleted', async () => {
 
   await api
     .delete(`/api/blogs/${blogToDelete.id}`)
+    .set('Authorization', `Bearer ${testToken}`)
     .expect(204)
 
   const blogsAtEnd = await Blog.find({})
