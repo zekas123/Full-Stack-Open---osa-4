@@ -2,8 +2,9 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "First class test123s",
-  "author": "Robert C. Mart111in",
-  "url": "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htm",
-  "likes": 11
+  "title": "Canonical string reduction123123",
+  "author": "Edsger W. Dijkstra123123",
+  "url": "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+  "likes": 12,
+  "userId": "6ae043c50e0d3068ee7b8906"
 }
