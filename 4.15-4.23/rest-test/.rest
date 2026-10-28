@@ -1,10 +1,15 @@
+
+###
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI2YWUxYWQyMWYwYzQ3OGY4M2Q3MWRjNjYiLCJpYXQiOjE3OTMxNzc1MjZ9.BxSlSll2ob_zgsGhWKl63qZd9bOxTrdwZz6xdgexeuA
 
 {
-  "title": "Canonical string reduction123123",
+  "title": "React patterns",
   "author": "Edsger W. Dijkstra123123",
   "url": "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
-  "likes": 12,
-  "userId": "6ae043c50e0d3068ee7b8906"
+  "likes": 7
 }
+###
+DELETE http://localhost:3003/api/blogs/6ae1b854a97c865910a3ec3d
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVra2FpIiwiaWQiOiI2YWUxYWQyMWYwYzQ3OGY4M2Q3MWRjNjYiLCJpYXQiOjE3OTMxNzc1MjZ9.BxSlSll2ob_zgsGhWKl63qZd9bOxTrdwZz6xdgexeuA

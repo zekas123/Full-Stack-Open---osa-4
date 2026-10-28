@@ -14,21 +14,21 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body
 
-  // 1. Проверяем username (наличие и минимальную длину)
+  // Проверяем username 
   if (!username || username.length < 3) {
     return response.status(400).json({
       error: 'username must be at least 3 characters long',
     })
   }
 
-  // 2. Проверяем password (наличие и минимальную длину)
+  // Проверяем password 
   if (!password || password.length < 3) {
     return response.status(400).json({
       error: 'password must be at least 3 characters long',
     })
   }
 
-  // 3. Объявляем userr И проверяем, нет ли такого пользователя в базе
+  // Объявляем userr И проверяем, нет ли такого пользователя в базе
   const userr = await User.findOne({ username })
   if (userr !== null) {
     return response.status(400).json({
@@ -36,7 +36,7 @@ usersRouter.post('/', async (request, response) => {
     })
   }
 
-  // 4. Если все проверки пройдены — хешируем и сохраняем
+  // Если все проверки пройдены — хешируем и сохраняем
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(password, saltRounds)
 
